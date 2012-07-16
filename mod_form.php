@@ -127,6 +127,20 @@ class mod_facetoface_mod_form extends moodleform_mod {
         $mform->addElement('textarea', 'waitlistedmessage', get_string('email:message', 'facetoface'), 'wrap="virtual" rows="15" cols="70"');
         $mform->setDefault('waitlistedmessage', get_string('setting:defaultwaitlistedmessagedefault', 'facetoface'));
 
+        // by DK
+        $mform->addElement('checkbox', 'disableautoenroll', get_string('disableautoenroll','facetoface'));
+        $mform->addHelpButton('disableautoenroll', 'disableautoenroll', 'facetoface');
+        
+        $disableperiod = array();
+        for ($i=0; $i<=365; $i += 1) {
+            $disableperiod[$i] = $i;
+        }
+        
+        $mform->addElement('select', 'disablewithindays', get_string('disablewithindays', 'facetoface'),$disableperiod);
+        $mform->setDefault('disablewithindays', 0);
+        $mform->disabledIf('disablewithindays', 'disableautoenroll');
+        $mform->addHelpButton('disablewithindays', 'disablewithindays', 'facetoface');
+        
         // CANCELLATION MESSAGE
         $mform->addElement('header', 'cancellation', get_string('cancellationmessage', 'facetoface'));
         $mform->addHelpButton('cancellation', 'cancellationmessage', 'facetoface');
