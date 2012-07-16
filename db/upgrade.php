@@ -673,6 +673,47 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         // facetoface savepoint reached
         upgrade_mod_savepoint(true, 2011120703, 'facetoface');
     }
-
+    //DK
+    if ($oldversion < 2012051100) {
+    
+        $table = new xmldb_table('facetoface');
+    	$field = new xmldb_field('disablewithindays', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'approvalreqd');
+    	 
+    
+    	if (!$dbman->field_exists($table, $field)) {
+    		$dbman->add_field($table, $field);
+    	}
+    
+    	// facetoface savepoint reached
+    	upgrade_mod_savepoint(true, 2012051100, 'facetoface');
+    }
+    
+    if ($oldversion < 2012051200) {
+    
+    	$table = new xmldb_table('facetoface_sessions');
+    	$field = new xmldb_field('disablenewenrolldays', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'timemodified');
+    
+    	 
+    	if (!$dbman->field_exists($table, $field)) {
+    		$dbman->add_field($table, $field);
+    	}
+    
+    	// facetoface savepoint reached
+    	upgrade_mod_savepoint(true, 2012051200, 'facetoface');
+    }
+    
+    if ($oldversion < 2012053002) {
+    
+    	$table = new xmldb_table('facetoface_sessions');
+    	$field = new xmldb_field('disableoption', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, null, null, null, 'disablenewenrolldays');
+    
+    
+    	if (!$dbman->field_exists($table, $field)) {
+    		$dbman->add_field($table, $field);
+    	}
+    
+    	// facetoface savepoint reached
+    	upgrade_mod_savepoint(true, 2012053002, 'facetoface');
+    }
     return $result;
 }
