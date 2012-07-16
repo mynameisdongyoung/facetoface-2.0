@@ -552,23 +552,50 @@ function facetoface_update_attendees($session) {
                 }
             }
 
+            //DK
+            $currenttime = new DateTime(date('c', time()));
+            $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id));
+            $starttime = new DateTime(date('c', $start->timestart));
+            $interval = $starttime->diff($currenttime);
+            $diffdays =  $interval->format('%a');
+            $disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id));
+            $disableddays = $disableddaysDB->disablewithindays;
+            
             // If booked less than capacity, book some new users
             if ($booked < $capacity) {
                 foreach ($users as $user) {
-                    if ($booked >= $capacity) {
-                        break;
-                    }
-
-                    if ($user->statuscode == MDL_F2F_STATUS_WAITLISTED) {
-
-                        if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
-                            // rollback_sql();
-                            return false;
-                        }
-                        $booked++;
-                    }
-                }
+            		if ($booked >= $capacity) {
+            			break;
+            		}
+            
+            		if (($user->statuscode == MDL_F2F_STATUS_WAITLISTED)&($diffdays>$disableddays)) {
+            
+            			if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
+            				// rollback_sql();
+            				return false;
+            			}
+            			$booked++;
+            		}
+            	}
             }
+            
+//             // If booked less than capacity, book some new users -->Original
+//             if ($booked < $capacity) {
+//                 foreach ($users as $user) {
+//                     if ($booked >= $capacity) {
+//                         break;
+//                     }
+
+//                     if ($user->statuscode == MDL_F2F_STATUS_WAITLISTED) {
+
+//                         if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
+//                             // rollback_sql();
+//                             return false;
+//                         }
+//                         $booked++;
+//                     }
+//                 }
+//             }
         }
     }
 
@@ -1387,15 +1414,26 @@ function facetoface_write_activity_attendance(&$worksheet, $startingrow, $faceto
     }
 
     // Fast version of "facetoface_get_sessions($facetofaceid, $location)"
-    $sql = "SELECT d.id as dateid, s.id, s.datetimeknown, s.capacity,
-                   s.duration, d.timestart, d.timefinish
-              FROM {facetoface_sessions} s
-              JOIN {facetoface_sessions_dates} d ON s.id = d.sessionid
-              WHERE
-                s.facetoface = ?
-              AND d.sessionid = s.id
-                   $locationcondition
-                   ORDER BY s.datetimeknown, d.timestart";
+//     $sql = "SELECT d.id as dateid, s.id, s.datetimeknown, s.capacity,
+//                    s.duration, d.timestart, d.timefinish
+//               FROM {facetoface_sessions} s
+//               JOIN {facetoface_sessions_dates} d ON s.id = d.sessionid
+//               WHERE
+//                 s.facetoface = ?
+//               AND d.sessionid = s.id
+//                    $locationcondition
+//                    ORDER BY s.datetimeknown, d.timestart";
+    $sql = "SELECT @rank:=@rank+1 as rank, DK.*
+    FROM(SELECT s.id, s.datetimeknown, s.capacity,
+    s.duration, d.timestart, d.timefinish
+    FROM {facetoface_sessions} s
+    JOIN {facetoface_sessions_dates} d ON s.id = d.sessionid
+    WHERE
+    s.facetoface = ?
+    AND d.sessionid = s.id
+    $locationcondition
+    ORDER BY s.datetimeknown, d.timestart
+    )DK, (SELECT @rank:=0) r";
 
     $sessions = $DB->get_records_sql($sql, array_merge(array($facetofaceid), $locationparam));
 
