@@ -33,7 +33,8 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="shortname"/>
         <FIELD NAME="shortname" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="showoncalendar"/>
         <FIELD NAME="showoncalendar" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="shortname" NEXT="approvalreqd"/>
-        <FIELD NAME="approvalreqd" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="showoncalendar"/>
+        <FIELD NAME="approvalreqd" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="showoncalendar" NEXT="disablewithindays"/>
+        <FIELD NAME="disablewithindays" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="approvalreqd"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for facetoface"/>
@@ -66,7 +67,9 @@
         <FIELD NAME="normalcost" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="The normal (non-discounted) cost of the session" PREVIOUS="duration" NEXT="discountcost"/>
         <FIELD NAME="discountcost" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Discounted cost of the event" PREVIOUS="normalcost" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="discountcost" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="disablenewenrolldays"/>
+        <FIELD NAME="disablenewenrolldays" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timemodified" NEXT="disableoption"/>
+        <FIELD NAME="disableoption" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="disablenewenrolldays"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="facetoface"/>
