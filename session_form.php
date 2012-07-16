@@ -119,10 +119,28 @@ class mod_facetoface_session_form extends moodleform {
             }
         }
 
-        $mform->addElement('editor', 'details', get_string('details', 'facetoface'), '');
+//     	$mform->addElement('editor', 'details', get_string('details', 'facetoface'), '');
+        $mform->addElement('textarea', 'details', get_string('details', 'facetoface'), array('cols'=>'55', 'rows'=>'8'));
         $mform->setType('details', PARAM_RAW);
         $mform->addHelpButton('details', 'details', 'facetoface');
 
+        // By DK
+        $mform->addElement('checkbox', 'disableoption', get_string('disableoption','facetoface'));
+        $mform->setType('disableoption', PARAM_INT);
+        $mform->setDefault('disableoption', 0);
+        $mform->addHelpButton('disableoption', 'disableoption', 'facetoface');
+        
+        
+        $disableperiod = array();
+        for ($i=0; $i<=365; $i += 1) {
+        	$disableperiod[$i] = $i;
+        }
+        $mform->addElement('select', 'disablenewenrolldays', get_string('disablenewenrolldays', 'facetoface'), $disableperiod);
+        $mform->setType('disablenewenrolldays', PARAM_INT);
+        $mform->setDefault('disablenewenrolldays', 0);
+        $mform->disabledIf('disablenewenrolldays', 'disableoption');
+        $mform->addHelpButton('disablenewenrolldays', 'disablenewenrolldays', 'facetoface');
+        
         // Choose users for trainer roles
         $rolenames = facetoface_get_trainer_roles();
 
