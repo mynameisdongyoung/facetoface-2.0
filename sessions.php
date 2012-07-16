@@ -103,7 +103,17 @@ if ($fromform = $mform->get_data()) { // Form submitted
     if (empty($fromform->discountcost)) {
         $fromform->discountcost = 0;
     }
-
+    
+    //DK
+    if(empty($fromform->disablenewenrolldays))
+    {
+    	$fromform->disablenewenrolldays = 0;
+    }
+    if (empty($fromform->disableoption))
+    {
+    	$fromform->disableoption = 0;
+    }
+    
     $sessiondates = array();
     for ($i = 0; $i < $fromform->date_repeats; $i++) {
         if (!empty($fromform->datedelete[$i])) {
@@ -120,6 +130,7 @@ if ($fromform = $mform->get_data()) { // Form submitted
         }
     }
 
+    //DK
     $todb = new stdClass();
     $todb->facetoface = $facetoface->id;
     $todb->datetimeknown = $fromform->datetimeknown;
@@ -128,7 +139,10 @@ if ($fromform = $mform->get_data()) { // Form submitted
     $todb->duration = $fromform->duration;
     $todb->normalcost = $fromform->normalcost;
     $todb->discountcost = $fromform->discountcost;
-    $todb->details = trim($fromform->details['text']);
+//     $todb->details = trim($fromform->details['text']);
+    $todb->details = $fromform->details;
+    $todb->disablenewenrolldays = $fromform->disablenewenrolldays;
+    $todb->disableoption = $fromform->disableoption;
 
     $sessionid = null;
     $transaction = $DB->start_delegated_transaction();
@@ -199,7 +213,7 @@ if ($fromform = $mform->get_data()) { // Form submitted
     redirect($returnurl);
 }
 elseif ($session != null) { // Edit mode
-    // Set values for the form
+    // Set values for the form //DK
     $toform = new stdClass();
     $toform->datetimeknown = (1 == $session->datetimeknown);
     $toform->capacity = $session->capacity;
@@ -208,7 +222,10 @@ elseif ($session != null) { // Edit mode
     $toform->normalcost = $session->normalcost;
     $toform->discountcost = $session->discountcost;
     $toform->details = $session->details;
-
+    //DK
+    $toform->disableoption = $session->disableoption;
+    $toform->disablenewenrolldays = $session->disablenewenrolldays;
+    
     if ($session->sessiondates) {
         $i = 0;
         foreach ($session->sessiondates as $date) {
